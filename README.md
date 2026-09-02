@@ -1,17 +1,19 @@
 # Smart Employee Service Desk & Ticket Management Portal
 
 **Hackathon Deliverables:**
-* 🎥 **Working Demo Video:** []
+* 🎥 **Working Demo Video:** [INSERT_YOUTUBE_OR_DRIVE_LINK_HERE]
 * 🗄️ **Database Schema:** Located in `database.sql`
 
-## ✨ Key Features & UI Enhancements
-* **Enterprise-Grade UI:** Fully responsive, modern slate design utilizing Plus Jakarta Sans typography, soft shadows, and Bootstrap Icons.
-* **Smart Dashboard & KPIs:** Real-time metrics cards tracking Total, Open, Resolved, and High Priority tickets alongside Category distribution pills.
-* **Advanced Search & Filtering:** Instant ticket filtering by Title, ID, Status (Open/Closed), and Department Category with elegant empty-state handling.
-* **Streamlined Workflow:** Custom priority selection inputs, toast notifications for successful submissions, and inline resolution-note processing.
+## 🌟 Beyond the Requirements: Advanced UX
+To elevate this project from a standard MVP to a production-ready enterprise tool, several features were engineered **strictly above and beyond the baseline rubric**:
+* **Algorithmic Priority Sorting:** Dynamic reordering of the ticket queue to ensure 'High' priority issues automatically surface to the top for immediate triaging.
+* **Multi-Dimensional Filtering:** Instant state-based data filtering across Department Categories and Statuses using interactive UI pills.
+* **Real-Time Search Engine:** Instantaneous text-matching against Ticket Titles and IDs to locate specific issues without continuous database round-trips.
 
-## 🏗️ Architecture & Tech Stack
-* **Frontend:** React.js (Vite), Bootstrap, Bootstrap Icons, Custom CSS
+## ✨ Key Features & Architecture
+* **Enterprise-Grade UI:** Fully responsive, modern slate design utilizing Plus Jakarta Sans typography, soft shadows, and Bootstrap Icons.
+* **Smart Dashboard & KPIs:** Real-time metrics cards tracking Total, Open, Resolved, and High Priority tickets alongside Category distribution.
+* **Frontend:** React.js (Vite), Bootstrap, Custom CSS
 * **Backend:** Node.js, Express.js (MVC-style architecture)
 * **Database:** PostgreSQL (`pg` connection pool)
 
