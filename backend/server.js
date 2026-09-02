@@ -77,16 +77,29 @@ app.put('/tickets/:id', async (req, res) => {
     }
 });
 
-// 5. CLOSE TICKET
+// 5. CLOSE TICKET 
 app.put('/tickets/:id/close', async (req, res) => {
     try {
         const { id } = req.params;
+        const { note } = req.body; // Capture the resolution note
+
+        // Update ticket status
         const closeTicket = await pool.query(
             "UPDATE Tickets SET Status = 'Closed' WHERE TicketId = $1 RETURNING *",
             [id]
         );
+
+        // If a note was provided, save it to the Comments table
+        if (note) {
+            await pool.query(
+                "INSERT INTO Comments (TicketId, Notes) VALUES ($1, $2)",
+                [id, note]
+            );
+        }
+
         res.json(closeTicket.rows[0]);
     } catch (err) {
+        console.error(err.message);
         res.status(500).json({ error: "Server Error" });
     }
 });

@@ -1,57 +1,58 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import TicketResults from './TicketResults';
 
-export default function TicketForm({ onTicketCreated }) {
-  const [formData, setFormData] = useState({ title: '', description: '', categoryId: 1, priority: 'Low' });
+export default function Dashboard({ refreshTrigger }) {
+  const [tickets, setTickets] = useState([]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevents page reload
-    try {
-      const response = await fetch('http://localhost:5000/tickets', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-      if (response.ok) {
-        setFormData({ title: '', description: '', categoryId: 1, priority: 'Low' }); // Reset form
-        onTicketCreated(); // Tell the dashboard to refresh
-      }
-    } catch (err) {
-      console.error(err);
-    }
+  useEffect(() => {
+    fetch('http://localhost:5000/tickets')
+      .then(res => res.json())
+      .then(data => setTickets(data))
+      .catch(err => console.error(err));
+  }, [refreshTrigger]);
+
+  const closeTicket = async (id, note) => {
+    await fetch(`http://localhost:5000/tickets/${id}/close`, { 
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note })
+    });
+    setTickets(tickets.map(t => t.ticketid === id ? { ...t, status: 'Closed' } : t));
   };
 
+  // Calculate Tickets by Category for Reporting
+  const categoryStats = tickets.reduce((acc, ticket) => {
+    acc[ticket.categoryname] = (acc[ticket.categoryname] || 0) + 1;
+    return acc;
+  }, {});
+
   return (
-    <div className="card p-3 shadow-sm mb-4">
-      <h4>Create Ticket</h4>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-2">
-          <label className="form-label">Title</label>
-          <input type="text" className="form-control" required value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} />
+    <div className="card p-4 shadow-sm">
+      <h4 className="mb-3">Ticket Dashboard</h4>
+      
+      {/* Metric Cards */}
+      <div className="row g-2 mb-4">
+        <div className="col-md-3">
+          <div className="card bg-primary text-white p-2 text-center shadow-sm">
+            <h6>Total Tickets</h6>
+            <h2>{tickets.length}</h2>
+          </div>
         </div>
-        <div className="mb-2">
-          <label className="form-label">Description</label>
-          <textarea className="form-control" required value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})}></textarea>
+        <div className="col-md-9">
+          <div className="card bg-light p-2 shadow-sm">
+            <h6 className="text-center text-muted mb-2">Tickets by Category</h6>
+            <div className="d-flex justify-content-around flex-wrap">
+              {Object.entries(categoryStats).map(([cat, count]) => (
+                <span key={cat} className="badge bg-secondary m-1 fs-6">
+                  {cat}: {count}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className="mb-2">
-          <label className="form-label">Category</label>
-          <select className="form-select" value={formData.categoryId} onChange={e => setFormData({...formData, categoryId: parseInt(e.target.value)})}>
-            <option value="1">IT</option>
-            <option value="2">HR</option>
-            <option value="3">Facilities</option>
-            <option value="4">Finance</option>
-            <option value="5">Access Management</option>
-          </select>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Priority</label>
-          <select className="form-select" value={formData.priority} onChange={e => setFormData({...formData, priority: e.target.value})}>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
-        <button type="submit" className="btn btn-primary w-100">Submit Ticket</button>
-      </form>
+      </div>
+
+      <TicketResults tickets={tickets} onTicketClosed={closeTicket} />
     </div>
   );
 }
