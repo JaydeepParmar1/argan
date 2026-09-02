@@ -1,7 +1,7 @@
 # Smart Employee Service Desk & Ticket Management Portal
 
 **Hackathon Deliverables:**
-* 🎥 **Working Demo Video:** [INSERT_YOUTUBE_OR_DRIVE_LINK_HERE]
+* 🎥 **Working Demo Video:** []
 * 🗄️ **Database Schema:** Located in `database.sql`
 
 ## 🌟 Beyond the Requirements: Advanced UX
